@@ -38,7 +38,7 @@ export async function POST(req: Request, { retryCount = 0 }: { retryCount?: numb
     let data;
     try {
       data = JSON.parse(responseText);
-    } catch (parseError) {
+    } catch {
       console.error('Failed to parse Hugging Face response:', responseText);
       return NextResponse.json({ error: 'Invalid response from Hugging Face API.' }, { status: 502 });
     }

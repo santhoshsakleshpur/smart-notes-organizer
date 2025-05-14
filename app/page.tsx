@@ -2,18 +2,19 @@
 import { useEffect, useState } from 'react';
 import NoteEditor from './components/NoteEditor';
 import useDebounce from './hooks/useDebounce';
+import { Note } from './types/interface';
 
 export default function Home() {
-  const [notes, setNotes] = useState<any[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
   const [search, setSearch] = useState('');
   const useDebouncedSearch = useDebounce(search, 500);
-  const [editing, setEditing] = useState<any | null>(null);
+  const [editing, setEditing] = useState<Note | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
     fetchNotes(search);
-  }, []);
+  }, [search]);
 
   const fetchNotes = async (q = '') => {
     const res = await fetch(`/api/notes${q ? `?q=${encodeURIComponent(q)}` : ''}`);
@@ -24,7 +25,7 @@ export default function Home() {
     if (isClient) fetchNotes(useDebouncedSearch);
   }, [useDebouncedSearch, isClient]);
 
-  const handleSave = async (data: any) => {
+  const handleSave = async (data: Omit<Note, '_id'>) => {
     try {
       if (editing) {
         await fetch(`/api/notes/${editing._id}`, {

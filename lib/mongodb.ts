@@ -1,7 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose, { Connection } from 'mongoose';
 
+/* eslint-disable no-var */
 declare global {
-  var mongoose: any;
+  var mongoose: {
+    conn: Connection | null;
+    promise: Promise<Connection> | null;
+  };
 }
 
 const MONGODB_URI = process.env.MONGODB_URI!;
@@ -15,7 +19,7 @@ export async function connectDB() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI).then(mongoose => mongoose);
+    cached.promise = mongoose.connect(MONGODB_URI).then(mongoose => mongoose.connection);
   }
   cached.conn = await cached.promise;
   return cached.conn;

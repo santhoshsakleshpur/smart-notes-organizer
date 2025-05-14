@@ -1,11 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { Note } from '../types/interface';
 
 const MINIMUM_KEYWORD_LENGTH = parseInt(process.env.NEXT_PUBLIC_MINIMUM_KEYWORD_LENGTH || '3', 10);
 
 interface NoteEditorProps {
-  note?: any,
-  onSave: (data: { title: string; content: string; category: string }) => Promise<void>
+  note?: Note,
+  onSave: (data: Omit<Note, '_id'>) => Promise<void>
 }
 export default function NoteEditor({ note, onSave }: NoteEditorProps) {
   const [title, setTitle] = useState('');
@@ -13,17 +14,6 @@ export default function NoteEditor({ note, onSave }: NoteEditorProps) {
   const [category, setCategory] = useState('Work');
   const [isMounted, setIsMounted] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
-  const [isLoading, setIsLoading] = useState(false);
-
-  const validateField = (field: string, value: string) => {
-    let error = '';
-    if (!value.trim()) {
-      error = `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`;
-    }
-    setErrors((prev) => ({ ...prev, [field]: error }));
-    return error == '';
-  }
 
   useEffect(() => {
     setIsMounted(true);
@@ -41,13 +31,7 @@ export default function NoteEditor({ note, onSave }: NoteEditorProps) {
     setContent('');
   };
 
-  useEffect(() => {
-    if (isMounted && content.split(' ').length > MINIMUM_KEYWORD_LENGTH) {
-      analyzeContent();
-    }
-  }, [content, isMounted]);
-
-  const analyzeContent = async () => {
+  const analyzeContent = useCallback(async () => {
     if (!content) return;
     setIsAnalyzing(true);
     try {
@@ -71,7 +55,13 @@ export default function NoteEditor({ note, onSave }: NoteEditorProps) {
     } finally {
       setIsAnalyzing(false);
     }
-  }
+  }, [content]);
+
+  useEffect(() => {
+    if (isMounted && content.split(' ').length > MINIMUM_KEYWORD_LENGTH) {
+      analyzeContent();
+    }
+  }, [content, isMounted, analyzeContent]);
 
   if (!isMounted) return (
     <div className="space-y-4">
