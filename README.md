@@ -18,13 +18,13 @@ Smart Notes is a note-taking application that allows users to create, edit, dele
   - MongoDB for database storage.
   - Tailwind CSS for styling.
   - Jest and React Testing Library for testing.
- 
-## Live Demo
-
-Access the live application here: [Smart Notes Organizer](https://smart-notes-organizer-lss7tcblh-snthshs-projects.vercel.app)
 
 - **AI Tools**:
   - Hugging Face's `facebook/bart-large-mnli` model for content categorization.
+
+## Live Demo
+
+Access the live application here: [Smart Notes Organizer](https://smart-notes-organizer-lss7tcblh-snthshs-projects.vercel.app/)
 
 ## Getting Started
 
