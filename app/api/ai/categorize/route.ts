@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 
 const MAX_RETRIES = parseInt(process.env.MAX_RETRIES || '3', 10);
 
-export async function POST(req: Request, { retryCount = 0 }: { retryCount?: number } = {}) {
+export async function POST(req: Request, context: { params: Promise<{ id?: string }> }) {
   const { text } = await req.json();
-
+  return handleRetry(req, text, 0);
+}
+async function handleRetry(req: Request, text: string, retryCount: number): Promise<Response> {
   try {
     const response = await fetch('https://api-inference.huggingface.co/models/facebook/bart-large-mnli', {
       method: 'POST',
@@ -31,7 +33,7 @@ export async function POST(req: Request, { retryCount = 0 }: { retryCount?: numb
       const waitTime = match ? parseInt(match[1]) * 1000 : 10000;
       await new Promise(resolve => setTimeout(resolve, waitTime));
       // Recursively retry, incrementing the retryCount
-      return POST(req, { retryCount: retryCount + 1 });
+      return handleRetry(req, text, retryCount + 1);
     }
 
     // Try to parse JSON
