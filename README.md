@@ -22,10 +22,6 @@ Smart Notes is a note-taking application that allows users to create, edit, dele
 - **AI Tools**:
   - Hugging Face's `facebook/bart-large-mnli` model for content categorization.
 
-## Live Demo
-
-Access the live application here: [Smart Notes Organizer](https://smart-notes-organizer-mocha.vercel.app)
-
 ## Getting Started
 
 ### Prerequisites
