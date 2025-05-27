@@ -12,11 +12,6 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-    fetchNotes(search);
-  }, [search]);
-
   const fetchNotes = async (q = '') => {
     setLoading(true);
     try {
@@ -29,8 +24,10 @@ export default function Home() {
     }
   }
 
+
   useEffect(() => {
-    if (isClient) fetchNotes(useDebouncedSearch);
+    setIsClient(true);
+    fetchNotes(useDebouncedSearch);
   }, [useDebouncedSearch, isClient]);
 
   const handleSave = async (data: Omit<Note, '_id'>) => {
